@@ -44,13 +44,13 @@ router.get('/', async (req, res) => {
 
 router.get('/:_id/logs', async(req, res) => {
   try {
-    const user = await Exer.find({ userId: req.params._id });
+    const user = await Exer.findOne({ userId: req.params._id });
     if (user) {
-
+      let cnt= await Exer.countDocuments({userId: req.params._id})
       res.json({
-        _id: req.params._id,
+        _id: user.userId,
         username: user.username,
-        count: 0,
+        count: cnt,
         log: []
       });
     }else{
