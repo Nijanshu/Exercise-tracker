@@ -87,11 +87,11 @@ router.post('/:_id/exercises', async function(req, res) {
       let pdate = new Date(req.body.date).toDateString();
       pdate.toString() === invalidDate
         ? res.json({ error: invalidDate })
-        : console.log("valid date");
+        : ''
 
-      const existingExer = await Exer.findOne({ userId: req.params._id });
+      // const existingExer = await Exer.findOne({ userId: req.params._id });
 
-      if (existingExer) {
+      // if (existingExer) {
         const ans = await Exer.create(
           {
             userId: req.params._id,
@@ -109,23 +109,23 @@ router.post('/:_id/exercises', async function(req, res) {
           duration: req.body.duration,
           description: req.body.description
         });
-      } else {
-        const newExer = await Exer.create({
-          userId: req.params._id,
-          username: user.username,
-          description: req.body.description,
-          duration: req.body.duration,
-          date: pdate
-        });
+      // } else {
+      //   const newExer = await Exer.create({
+      //     userId: req.params._id,
+      //     username: user.username,
+      //     description: req.body.description,
+      //     duration: req.body.duration,
+      //     date: pdate
+      //   });
 
-        return res.json({
-          _id: newExer.userId,
-          username: newExer.username,
-          date: newExer.date,
-          duration: newExer.duration,
-          description: newExer.description
-        });
-      }
+      //   return res.json({
+      //     _id: newExer.userId,
+      //     username: newExer.username,
+      //     date: newExer.date,
+      //     duration: newExer.duration,
+      //     description: newExer.description
+      //   });
+      // }
     } else {
       return res.json({ error: 'User not found' });
     }
