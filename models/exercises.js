@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-
 const exercises = new Schema({
-    _id:{
+    userId: {
         type: String,
-        unique: false,
         required: true
-    },
+        },
     description:{
         type: String,
         required: true

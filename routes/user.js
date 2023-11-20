@@ -9,7 +9,6 @@ router.get('/', async (req, res) => {
 
   // Connection URI
   const uri = process.env.mongoDBURI;
-  console.log(uri);
 
   // Create a new MongoClient
   const client = new MongoClient(uri);
@@ -43,6 +42,31 @@ router.get('/', async (req, res) => {
 });
 
 
+router.get('/:id/logs', async(req, res) => {
+  try {
+    const user = await Exer.findOne({ _id: req.params._id });
+    if (user) {
+      const newExer = await Exer.create({
+        _id: req.params._id,
+        username: user.username,
+        
+      });
+
+      res.json({
+        _id: newExer._id,
+        username: newExer.username,
+        date: newExer.date,
+        duration: newExer.duration,
+        description: newExer.description
+      });
+    }else{
+
+    }
+  }catch(e){
+
+  }
+})
+
 
 router.post('/', async function(req, res) {
   try {
@@ -71,12 +95,12 @@ router.post('/:_id/exercises', async function(req, res) {
         ? res.json({ error: invalidDate })
         : console.log("valid date");
 
-      const existingExer = await Exer.findOne({ _id: req.params._id });
+      const existingExer = await Exer.findOne({ userId: req.params._id });
 
       if (existingExer) {
-        const ans = await Exer.updateOne(
-          { _id: req.params._id },
+        const ans = await Exer.create(
           {
+            userId: req.params._id,
             username: user.username,
             description: req.body.description,
             duration: req.body.duration,
@@ -85,7 +109,7 @@ router.post('/:_id/exercises', async function(req, res) {
         );
 
         res.json({
-          _id: req.params._id,
+          _id: ans.userId,
           username: user.username,
           date: pdate,
           duration: req.body.duration,
@@ -93,7 +117,7 @@ router.post('/:_id/exercises', async function(req, res) {
         });
       } else {
         const newExer = await Exer.create({
-          _id: req.params._id,
+          userId: req.params._id,
           username: user.username,
           description: req.body.description,
           duration: req.body.duration,
@@ -101,7 +125,7 @@ router.post('/:_id/exercises', async function(req, res) {
         });
 
         res.json({
-          _id: newExer._id,
+          _id: newExer.userId,
           username: newExer.username,
           date: newExer.date,
           duration: newExer.duration,
