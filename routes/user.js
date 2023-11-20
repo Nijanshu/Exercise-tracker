@@ -42,25 +42,19 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/:id/logs', async(req, res) => {
+router.get('/:_id/logs', async(req, res) => {
   try {
-    const user = await Exer.findOne({ _id: req.params._id });
+    const user = await Exer.findOne({ userId: req.params._id });
     if (user) {
-      const newExer = await Exer.create({
-        _id: req.params._id,
-        username: user.username,
-        
-      });
 
       res.json({
-        _id: newExer._id,
-        username: newExer.username,
-        date: newExer.date,
-        duration: newExer.duration,
-        description: newExer.description
+        _id: req.params._id,
+        username: user.username,
+        count: 0,
+        log: []
       });
     }else{
-
+      res.json({error: 'User not found'});
     }
   }catch(e){
 
