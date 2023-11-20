@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:_id/logs', async(req, res) => {
   try {
-    const user = await Exer.findOne({ userId: req.params._id });
+    const user = await Exer.find({ userId: req.params._id });
     if (user) {
 
       res.json({
@@ -102,7 +102,7 @@ router.post('/:_id/exercises', async function(req, res) {
           }
         );
 
-        res.json({
+        return res.json({
           _id: ans.userId,
           username: user.username,
           date: pdate,
@@ -118,7 +118,7 @@ router.post('/:_id/exercises', async function(req, res) {
           date: pdate
         });
 
-        res.json({
+        return res.json({
           _id: newExer.userId,
           username: newExer.username,
           date: newExer.date,
