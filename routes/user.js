@@ -3,6 +3,47 @@ const router = express.Router();
 const Exer = require('../models/exercises');
 const USER = require('../models/users');
 
+router.get('/', async (req, res) => {
+  const MongoClient = require('mongodb').MongoClient;
+  require('dotenv').config();
+
+  // Connection URI
+  const uri = process.env.mongoDBURI;
+  console.log(uri);
+
+  // Create a new MongoClient
+  const client = new MongoClient(uri);
+
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+
+    // Specify the collection name
+    const collectionName = 'userrs';
+
+    // Access the database and collection
+    const db = client.db();
+    const collection = db.collection(collectionName);
+
+    // Find all documents in the collection
+    const cursor = collection.find();
+
+    // Convert the cursor to an array of documents
+    const documents = await cursor.toArray();
+
+    // Send the documents as JSON response
+    res.json(documents);
+
+    // Close the connection
+    await client.close();
+  } catch (err) {
+    console.error('Error connecting to MongoDB:', err);
+    res.status(500).send('Error connecting to MongoDB');
+  }
+});
+
+
+
 router.post('/', async function(req, res) {
   try {
     const resp = await USER.create({
