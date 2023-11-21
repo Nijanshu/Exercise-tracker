@@ -91,10 +91,11 @@ router.post('/:_id/exercises', async function(req, res) {
       pdate.toString() === invalidDate
         ? res.json({ error: invalidDate })
         : ''
-
+      let {description, duration}= req.body;
+      duration=Number(duration);
         const newExercise={
-          description: req.body.description,
-          duration: req.body.duration,
+          description: description,
+          duration: duration,
           date: pdate
         }
 
