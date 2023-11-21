@@ -5,6 +5,10 @@ const usersSchema = new Schema({
     username: {
         type: String,
         required: true
+    },
+    exercises: {
+        type: Array,
+        required: true
     }
 });
 

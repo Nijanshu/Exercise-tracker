@@ -44,14 +44,15 @@ router.get('/', async (req, res) => {
 
 router.get('/:_id/logs', async(req, res) => {
   try {
-    const user = await Exer.findOne({ userId: req.params._id });
+    const user = await USER.findOne({ _id: req.params._id });
     if (user) {
-      let cnt= await Exer.countDocuments({userId: req.params._id})
+      
+      
       res.json({
-        _id: user.userId,
+        _id: user._id,
         username: user.username,
-        count: cnt,
-        log: []
+        count: user.exercises.length,
+        log: user.exercises
       });
     }else{
       res.json({error: 'User not found'});
@@ -65,12 +66,14 @@ router.get('/:_id/logs', async(req, res) => {
 router.post('/', async function(req, res) {
   try {
     const resp = await USER.create({
-      username: req.body.username
+      exercises: [],
+      username: req.body.username,
     });
 
     res.json({
       username: resp.username,
-      _id: resp._id
+      exercises: resp.exercises,
+      _id: resp._id,
     });
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -89,43 +92,34 @@ router.post('/:_id/exercises', async function(req, res) {
         ? res.json({ error: invalidDate })
         : ''
 
-      // const existingExer = await Exer.findOne({ userId: req.params._id });
-
-      // if (existingExer) {
-        const ans = await Exer.create(
-          {
-            userId: req.params._id,
-            username: user.username,
-            description: req.body.description,
-            duration: req.body.duration,
-            date: pdate
-          }
-        );
-
-        return res.json({
-          _id: ans.userId,
-          username: user.username,
-          date: pdate,
+        const newExercise={
+          description: req.body.description,
           duration: req.body.duration,
-          description: req.body.description
-        });
-      // } else {
-      //   const newExer = await Exer.create({
-      //     userId: req.params._id,
-      //     username: user.username,
-      //     description: req.body.description,
-      //     duration: req.body.duration,
-      //     date: pdate
-      //   });
+          date: pdate
+        }
 
-      //   return res.json({
-      //     _id: newExer.userId,
-      //     username: newExer.username,
-      //     date: newExer.date,
-      //     duration: newExer.duration,
-      //     description: newExer.description
-      //   });
-      // }
+        async function updateUserExercise() {
+          try {
+            const user = await USER.findOne({ _id: req.params._id });
+            console.log(newExercise);
+            user.exercises.push(newExercise);
+            await user.save();
+        
+            const response = {
+              _id: user._id,
+              username: user.username,
+              date: pdate,
+              duration: req.body.duration,
+              description: req.body.description,
+            };
+        
+            res.json(response);
+          } catch (err) {
+            console.error(err);
+            res.send(ERROR);
+          }
+        }
+        updateUserExercise();
     } else {
       return res.json({ error: 'User not found' });
     }
