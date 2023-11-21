@@ -45,14 +45,23 @@ router.get('/', async (req, res) => {
 router.get('/:_id/logs', async(req, res) => {
   try {
     const user = await USER.findOne({ _id: req.params._id });
+    const dateFrom = new Date(req.query.from);
+    const dateTo = new Date(req.query.to);
+    const limit = parseInt(req.query.limit);
+
     if (user) {
-      
-      
+      user.exercises.filter(exercise =>
+        new Date(Date.parse(exercise.date)).getTime() > dateFrom
+        && new Date(Date.parse(exercise.date)).getTime() < dateTo
+    )
+    let log=user.exercises;
+      if (limit) log = log.slice(0, limit)
+
       res.json({
         _id: user._id,
         username: user.username,
-        count: user.exercises.length,
-        log: user.exercises
+        count: log.length,
+        log: log
       });
     }else{
       res.json({error: 'User not found'});
