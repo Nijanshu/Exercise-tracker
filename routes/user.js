@@ -118,9 +118,10 @@ router.post('/:_id/exercises', async function(req, res) {
             const response = {
               _id: user._id,
               username: user.username,
-              date: pdate,
-              duration: req.body.duration,
-              description: req.body.description,
+              description: user.exercises[user.exercises.length - 1].description,
+              duration: user.exercises[user.exercises.length - 1].duration,
+              date: new Date(user.exercises[user.exercises.length - 1].date).toDateString(),
+             
             };
         
             res.json(response);
