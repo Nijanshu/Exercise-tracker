@@ -87,7 +87,7 @@ router.post('/:_id/exercises', async function(req, res) {
     if (user) {
       const invalidDate = "Invalid Date";
 
-      let pdate = new Date(req.body.date).toDateString();
+      let pdate = req.body.date?new Date(req.body.date).toDateString(): new Date().toDateString();
       pdate.toString() === invalidDate
         ? res.json({ error: invalidDate })
         : ''
